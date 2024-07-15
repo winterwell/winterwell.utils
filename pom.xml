@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>good-loop.com</groupId>
+  <groupId>winterwell.com</groupId>
   <artifactId>winterwell.utils</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -24,6 +24,11 @@
       <organizationUrl>http://winterwell.com</organizationUrl>
     </developer>
   </developers>
+<scm>
+  <connection>scm:git:git://github.com/winterwell/winterwell.utils.git</connection>
+  <developerConnection>scm:git:ssh://github.com:winterwell/winterwell.utils.git</developerConnection>
+  <url>http://github.com/winterwell/winterwell.utils/tree/main</url>
+</scm>
 
 
   <properties>
