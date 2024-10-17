@@ -1041,7 +1041,7 @@ public final class Containers  {
 	 * @see #only(Iterable)
 	 */
 	public static <X> X first(Iterable<X> collection) {
-		if (collection==null) return null;
+		if (collection==null) return null;		
 		return get(collection, 0);
 	}
 
@@ -1086,6 +1086,7 @@ public final class Containers  {
 			if ( ! it.hasNext()) return null;
 			it.next();
 		}
+		if ( ! it.hasNext()) return null;
 		return it.next();
 	}
 
