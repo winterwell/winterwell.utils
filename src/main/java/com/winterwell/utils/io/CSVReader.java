@@ -384,6 +384,10 @@ public class CSVReader implements Iterable<String[]>, Iterator<String[]>, Closea
 		}
 	}
 
+	public String[] peekNext() {
+		return nextRecord;
+	}
+	
 	/**
 	 * @see java.util.Iterator#remove()
 	 */

@@ -28,6 +28,7 @@ import com.winterwell.utils.ReflectionUtils;
 import com.winterwell.utils.StrUtils;
 import com.winterwell.utils.Utils;
 import com.winterwell.utils.containers.ArrayMap;
+import com.winterwell.utils.containers.AbstractIterator;
 import com.winterwell.utils.containers.Cache;
 import com.winterwell.utils.containers.Containers;
 import com.winterwell.utils.containers.Pair;
@@ -37,7 +38,7 @@ import com.winterwell.utils.time.TUnit;
 import com.winterwell.utils.time.Time;
 import com.winterwell.utils.time.TimeUtils;
 
-class RSIterator implements Iterator<Object[]> {
+class RSIterator extends AbstractIterator<Object[]> {
 
 	private int cols;
 	private Boolean hasNext;
@@ -71,16 +72,11 @@ class RSIterator implements Iterator<Object[]> {
 	}
 
 	@Override
-	public boolean hasNext() {
-		// handle repeated calls without repeated advances
+	public Object[] next2() {
 		advanceIfNeeded();
-		return hasNext;
-	}
-
-	@Override
-	public Object[] next() {
-		// do we need to advance? Not if #hasNext() was called just before
-		advanceIfNeeded();
+		if (hasNext == Boolean.FALSE) {
+			return null;
+		}
 		// Either next or hasNext will now trigger an advance
 		hasNext = null;
 		try {
@@ -110,7 +106,7 @@ class RSIterator implements Iterator<Object[]> {
  *
  * @see JpaUtils
  * @author daniel
- * @testedby  SqlUtilsTest}
+ * @testedby  SqlUtilsTest
  */
 public class SqlUtils {
 

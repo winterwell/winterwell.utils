@@ -16,6 +16,7 @@ import com.winterwell.utils.web.WebUtils;
 
 /**
  * This applies a "default" lookup strategy for properties files to the use of {@link ConfigBuilder} and {@link Dep}.
+ * Includes .env
  * 
  * You can over-ride it to implement your own config strategy.
  * 
@@ -203,16 +204,16 @@ winterwell/logins/thingy/thingy.properties
 		List<File> files = new ArrayList();
 		// explicitly set
 		files.addAll(extraPropFiles);
-		// HACK: WW logins repo
-		try {
-			File loginsDir = new File(FileUtils.getWinterwellDir(), "logins");
-			files.add(new File(loginsDir, "logins."+appName+".properties"));
-			files.add(new File(loginsDir, thingy+".properties"));
-			files.add(new File(loginsDir, thingy+"/"+thingy+".properties"));
-		} catch(Exception fex) {			
-			// oh well - no WW home - log and carry on
-			Log.w(LOGTAG, fex.toString());
-		}
+//		// HACK: WW logins repo
+//		try {
+//			File loginsDir = new File(FileUtils.getWinterwellDir(), "logins");
+//			files.add(new File(loginsDir, "logins."+appName+".properties"));
+//			files.add(new File(loginsDir, thingy+".properties"));
+//			files.add(new File(loginsDir, thingy+"/"+thingy+".properties"));
+//		} catch(Exception fex) {			
+//			// oh well - no WW home - log and carry on
+//			Log.w(LOGTAG, fex.toString());
+//		}
 		// the normal set of options
 		for(Object option : options) {
 			if (option==null) continue;
@@ -271,11 +272,6 @@ winterwell/logins/thingy/thingy.properties
 			cb.setDebug(debug);
 			// system props
 			cb.setFromSystemProperties(null);
-			// .env if present
-			File f = new File(".env");
-			if (f.isFile()) {
-				cb.set(f);
-			}
 			// check several config files
 			List<File> propsPath = getPropFileOptions(configClass);
 			for(File pp : propsPath) {		
@@ -284,6 +280,11 @@ winterwell/logins/thingy/thingy.properties
 				} else if (debug) {
 					Log.d(LOGTAG, "Skip no config file "+pp);
 				}
+			}
+			// .env if present
+			File f = new File(".env");
+			if (f.isFile()) {
+				cb.set(f);
 			}
 			// args
 			if (args==null) {
