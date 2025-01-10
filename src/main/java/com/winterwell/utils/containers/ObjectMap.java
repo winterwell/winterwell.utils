@@ -30,29 +30,8 @@ public final class ObjectMap extends AbstractMap2<String, Object> {
 
 	@Override
 	public Object get(Object key) {
-		// TODO search down for fields in super-classes
 		String k = (String) key;
-		try {
-			Field f = klass.getField(k);
-			try {
-				f.setAccessible(true);
-			} catch(Exception ex) {
-				Log.d("ObjectMap", ex);
-			}
-			return f.get(object);
-		} catch (NoSuchFieldException ex) {
-			try {
-				Field f = klass.getDeclaredField(k);
-				f.setAccessible(true);
-				return f.get(object);
-			} catch (NoSuchFieldException e) {
-				return null;
-			} catch (Exception e) {
-				throw Utils.runtime(e);
-			}
-		} catch (Exception e) {
-			throw Utils.runtime(e);
-		}
+		return ReflectionUtils.getPrivateField(object, k);
 	}
 	
 	@Override

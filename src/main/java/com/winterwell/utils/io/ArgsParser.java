@@ -131,7 +131,7 @@ public class ArgsParser {
 	 * @return
 	 * @throws ParseException
 	 */
-	public static Object convert(Class<?> type, String string)
+	public static Object convert(Class type, String string)
 			throws ParseException {		
 		try {
 			// pluggable converter, such as an AField
@@ -455,6 +455,14 @@ public class ArgsParser {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param f
+	 * @param prop
+	 * @param set list of fields that have been set (for eg. reporting against required fields)
+	 * @param errors
+	 * @return
+	 */
 	private boolean set2(Field f, String prop, List<Field> set, List<Exception> errors) {
 		assert f != null : prop;
 		try {
@@ -587,6 +595,35 @@ public class ArgsParser {
 	 */
 	public static <S> S getConfig(S config, File propertiesFile) {
 		return getConfig(config, null, propertiesFile, null);
+	}
+
+	/**
+	 * HACK use this as a serializer
+	 * @param <X>
+	 * @param type
+	 * @return
+	 */
+	public <X> ISerialize<X> getSerializer(Class<X> type) {
+		ISerialize conv = convertors.get(type);
+		if (conv!=null) {
+			return conv;
+		}
+		return new ISerialize<X>() {
+			@Override
+			public boolean canConvert(Class _type) {
+				return type.equals(_type);
+			}
+
+			@Override
+			public X fromString(String v) throws Exception {
+				return (X) convert(type, v);
+			}
+
+			@Override
+			public String toString(X value) {
+				return value.toString();
+			}
+		};
 	}
 	
 

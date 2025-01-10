@@ -772,7 +772,7 @@ public class SqlUtils {
 				continue;
 			}
 			
-			Object v = col2val.get(colInfo.first);
+			Object v = col2val.get(colInfo.first);			
 			if (v == null && leaveMissingAlone) {
 				continue;
 			}
@@ -1063,20 +1063,33 @@ public class SqlUtils {
 		List<Pair<String>> columnInfo = upsert2_columnInfo(em, table,
 				idColumns, col2val, specialCaseId);
 
-		StringBuilder whereClause = SqlUtils.upsert2_where(idColumns, col2val);
+		// handle camelCase (Java) to lowercase (Postgres)
+		ArrayMap _col2val = new ArrayMap(col2val); // defensive copy
+		for(String col : col2val.keySet()) {
+			String lcol = col.toLowerCase();
+			if (col.equals(lcol)) continue;
+			if (col2val.containsKey(lcol)) {
+				Log.w(LOGTAG, "Case insensitive name overlap! "+col+" in "+col2val);
+				continue;
+			}
+			Object v = col2val.get(col);
+			_col2val.put(lcol, v);
+		}
+		
+		StringBuilder whereClause = SqlUtils.upsert2_where(idColumns, _col2val);
 
 		StringBuilder upsert = new StringBuilder();
 
 		// 1. update where exists
-		SqlUtils.upsert2_update(table, col2val, specialCaseId, columnInfo,
+		SqlUtils.upsert2_update(table, _col2val, specialCaseId, columnInfo,
 				whereClause, upsert, leaveMissingAlone);
 
 		// 2. insert where not exists
 		// Allow for initial defaults to be set on insert
-		Map<String, Object> insertCol2val = (Map) col2val;
+		Map<String, Object> insertCol2val = _col2val;
 		if (insertOnlyCol2val != null) {
-			insertCol2val = new HashMap(insertOnlyCol2val);
-			insertCol2val.putAll(col2val);
+			insertCol2val = new HashMap(insertOnlyCol2val); // copy
+			insertCol2val.putAll(_col2val);
 		}
 		SqlUtils.upsert2_insert(table, insertCol2val, specialCaseId, columnInfo,
 				whereClause, upsert);

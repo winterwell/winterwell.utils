@@ -324,7 +324,7 @@ public class ReflectionUtils {
 
 	/**
 	 * 
-	
+	Apply {@link #getField(Class, String)} to get the value
 	 * @param <X>
 	 * @param obj
 	 * @param fieldName
